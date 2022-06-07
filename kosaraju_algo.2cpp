@@ -1,0 +1,99 @@
+#include<bits/stdc++.h>
+#define REP(i,n) for (int i = 1; i <= n; i++)
+#define mod 1000000007
+#define pb push_back
+#define ff first
+#define ss second
+#define ii pair<int,int>
+#define vi vector<int>
+#define vii vector<ii>
+#define int long long int
+#define endl '\n'
+
+using namespace std;
+const int mxx=1e5+5;
+vi ar[mxx];
+vi tr[mxx];
+
+vi order;
+vi SCC;
+
+int vis[1001];
+
+void dfs(int node)
+{
+	vis[node] = 1;
+	
+	for(int child : ar[node])
+	if(vis[child] == 0)
+	dfs(child);
+	
+	order.pb(node);
+}
+
+void dfs1(int node)
+{
+	vis[node] = 1;
+	
+	for(int child : tr[node])
+	if(vis[child] == 0)
+	dfs1(child);
+	
+	SCC.pb(node);
+}
+
+int32_t main()
+{
+	int n , a , b , m , t;
+	t=1;
+	
+	while(t--)
+	{
+		cin>>n;
+         vi costs(n+1);
+        REP(i,n){
+        	
+        cin>>costs[i];
+        }
+		REP(i , n) ar[i].clear() , tr[i].clear() , vis[i] = 0;
+		order.clear();
+		cin>>m;
+		REP(i , m)
+		{
+			cin>>a>>b;
+			ar[a].pb(b);
+			tr[b].pb(a);
+		}
+
+       
+		
+		REP(i , n)
+		if(vis[i] == 0) dfs(i);
+		
+		REP(i , n) vis[i] = 0;
+		int ans=0;
+		int ways=1;
+		REP(i , n)
+		if(vis[order[n-i]] == 0)
+		{
+			SCC.clear();
+			dfs1(order[n - i]);
+			int curr_ways=0;
+			int mi=INT_MAX;
+			for(int node : SCC){
+				//cout<<node<<" ";
+				mi=min(mi,costs[node]);
+			}
+			//cout<<"\n"<<order[n-i]<<"\n";
+			ans+=mi;
+			for(int node : SCC){
+				if(costs[node]==mi)curr_ways++;
+			}
+			ways=(ways%mod)*(curr_ways%mod);
+		      
+		}
+		cout<<ans<<" "<<ways<<"\n";
+	}
+}
+
+

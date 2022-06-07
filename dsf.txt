@@ -1,0 +1,180 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define pr pair<int, int>
+#define vect vector
+#define pb push_back
+#define wgr vector<pair<int, int>>
+#define lowestbit(x) __builtin_ffs(x)  //returns 1+index of(lowest bit)
+#define highestbit(x) __builtin_clz(x) //returns number of 0's to left of MST
+#define is(x) cerr << #x << " is " << x << endl;
+#define sortv sort(v1.begin(), v1.end());
+#define loop(i, a, b) for (int i = (a); i < (b); i++)
+#define inputarr loop(i, 0, n) cin >> ar[i];
+int mod = 1e9 + 7;
+ll inf = 1e18;
+int mx = -1;
+ll mn = 1e18;
+
+int T=0;
+vector<int>p,d;
+vector<bool>v;
+
+vector<vector<int>>tree;
+void dfs(int v,int par=-1,int dep=0){
+    p[v]=par;
+    d[v]=dep;
+    for(auto child : tree[v]){
+        if(child==par){
+            continue;
+        }
+        dfs(child,v,dep+1);
+    }
+    
+}
+void clean(int n){
+    for(int i=0;i<n;i++){
+        v[i]=false;
+    }
+}
+
+
+
+void que(){
+    
+     int k;
+        cin>>k;
+        if(k==1 || k==2){
+            cout<<"YES"<<"\n";
+            return;
+        }
+        vector<int>ver(k);
+        pair<int,int>dep1,dep2;
+        loop(i,0,k){
+            int x;
+            cin>>x;
+            --x;
+            ver[i]=x;
+            if(i==0){
+                dep1.first=ver[i];
+                dep1.second=d[ver[i]];
+            }
+            else{
+                if(dep1.second<d[ver[i]]){
+                dep1.first=ver[i];
+                dep1.second=d[ver[i]];
+                }
+            }
+            
+        }
+        dep2.first=-1;
+        dep2.second=-1;
+         int d1=dep1.second;
+         while(p[d1]!=-1){
+              v[d1]=true;
+              d1=p[d1];
+          }
+          set<int>nv;
+        loop(i,0,k){
+            if(v[ver[i]]==false){
+                nv.insert(ver[i]);
+            }
+            
+            if(ver[i]==dep1.first){
+                continue;
+            }
+            else if(d[ver[i]]>dep2.second && v[ver[i]]==false){
+                dep2.second=d[ver[i]];
+                dep2.first=ver[i];
+            }
+            
+        }
+        
+        if(nv.empty() ){
+            cout << "YES" << endl;
+            return ;
+        }
+        
+        int d2=dep2.second;
+       
+        
+       int temp=-1;
+        while(p[d2]!=-1  && d2!=-1){
+            if(v[d2]==true){
+                temp=d[d2];
+                break;
+            }
+            v[d2]=true;
+           d2=p[d2];
+          }
+          if(temp>0){
+              for(int i=0;i<nv.size();i++){
+                  if(d[nv[i]]>temp || v[nv[i]]==false){
+                      cout<<"NO"<<"\n";
+                      return;
+                  }
+              }
+              cout<<"YES"<<"\n";
+              return;
+              
+              
+          }
+          else{
+              	  for(int i=0;i<nv.size();i++){
+                  if(v[nv[i]]==false){
+                      cout<<"NO"<<"\n";
+                      return;
+                  }
+              }
+              cout<<"YES"<<"\n";
+              return;
+              
+              
+          }
+       
+        
+   
+}
+
+
+
+void solve(){
+    int n;
+    cin>>n;
+    
+    T = 0;
+	p = d = vector<int>(n);
+	tree = vector<vector<int>>(n);
+    v=vector<bool>(n);
+    clean(n);
+    
+    
+    for(int i=0;i<n-1;i++){
+    int x, y;
+		cin >> x >> y;
+		--x, --y;
+    }
+    dfs(0);
+    int q;
+    cin>>q;
+    while(q--){
+        que();
+        
+    }
+    
+}
+
+
+
+
+int main()
+{
+    int t;
+    cin>>t;
+    while(t--){
+        solve();
+    }
+    
+   
+   return 0;
+}
